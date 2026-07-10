@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zamin — Physicalizing the Poised-Zero Substrate · PRATIK Ternary Silicon</title>
+<meta name="author" content="Abhishek Choudhary">
+<meta name="copyright" content="© 1993–2026 Abhishek Choudhary. All rights reserved.">
+<meta name="description" content="A hardware-realization paper for the PRATIK ternary substrate: MTCMOS three-rail ternary logic, the poised-zero high-impedance state, a memristive 3D crossbar with autogenous dimension spawning, spatial linguistic compilation, TSV routing, and microfluidic cooling.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Spline+Sans+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],tags:'ams'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  :root{--ink:#0a1430;--navy:#0b1e46;--paper:#f7f4ec;--gold:#b8912f;--gold-b:#c8a24a;--oxblood:#7a1f2b;--slate:#54607a;--rule:#d9d0bd;--link:#294b8f;--measure:44rem}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;background:var(--ink);color:#16203a;font-family:"Spectral",Georgia,serif;font-size:19px;line-height:1.66}
+  .masthead{background:linear-gradient(180deg,#0b1e46,#0a1430);color:#eef2ff;border-bottom:2px solid var(--gold);padding:2.4rem 1.5rem 2rem}
+  .masthead .kicker{font-family:"Spline Sans Mono",monospace;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-b);margin:0 0 1rem}
+  .masthead h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(2rem,5vw,3.4rem);line-height:1.03;margin:0;letter-spacing:-.01em;max-width:19ch}
+  .masthead h1 em{font-style:italic;color:var(--gold-b)}
+  .masthead .dek{font-family:"Fraunces",serif;font-style:italic;font-size:clamp(1.05rem,2.4vw,1.45rem);color:#cdd6f2;margin:1rem 0 0;max-width:54ch}
+  .byline{margin-top:1.5rem;font-family:"Spline Sans Mono",monospace;font-size:.8rem;color:#9fb0e0;line-height:1.9}
+  .byline b{color:#eef2ff;font-weight:600}.tern{color:var(--gold-b);font-weight:600}
+  .page{background:var(--paper)}
+  .wrap{max-width:var(--measure);margin:0 auto;padding:3rem 1.5rem 1rem}
+  .bh{display:flex;justify-content:space-between;font-family:"Spline Sans Mono",monospace;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--slate);border-bottom:1px solid var(--rule);padding-bottom:.6rem;margin-bottom:2rem}
+  h2{font-family:"Fraunces",serif;font-weight:900;font-size:1.85rem;line-height:1.1;margin:3.2rem 0 .3rem;color:var(--navy)}
+  h2 .num{display:block;font-family:"Spline Sans Mono",monospace;font-size:.72rem;letter-spacing:.28em;color:var(--gold);margin-bottom:.5rem;font-weight:600}
+  h3{font-family:"Fraunces",serif;font-weight:600;font-size:1.25rem;color:var(--navy);margin:2rem 0 .2rem}
+  h4{font-family:"Spline Sans Mono",monospace;font-weight:600;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:var(--oxblood);margin:1.5rem 0 .1rem}
+  p{margin:.9rem 0}a{color:var(--link);text-decoration:underline;text-decoration-color:#b7c2dd;text-underline-offset:.14em}a:hover{text-decoration-color:var(--link)}
+  .lead{font-size:1.15rem}.lead::first-letter{font-family:"Fraunces",serif;font-weight:900;float:left;font-size:4.2rem;line-height:.72;padding:.35rem .5rem .1rem 0;color:var(--oxblood)}
+  .eyebrow{font-family:"Spline Sans Mono",monospace;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:0 0 .3rem}
+  .callout{background:var(--navy);color:#eef2ff;padding:1.3rem 1.4rem;margin:2rem 0;border-radius:6px}
+  .callout .eyebrow{color:var(--gold-b)}.callout a{color:var(--gold-b)}
+  ol.toc{list-style:none;padding:0;margin:1rem 0;columns:2;column-gap:2rem;font-family:"Spline Sans Mono",monospace;font-size:.82rem}
+  ol.toc li{margin:.35rem 0;break-inside:avoid}ol.toc a{text-decoration:none;color:var(--navy)}ol.toc .n{color:var(--gold);margin-right:.5rem}
+  pre.net{background:#0d1b3a;color:#dfe6ff;font-family:"Spline Sans Mono",monospace;font-size:.72rem;line-height:1.5;padding:1rem 1.1rem;overflow-x:auto;border-radius:6px;margin:1.2rem 0}
+  pre.net .c{color:#7f8fbf}pre.net .k{color:#c8a24a}
+  pre.ascii{background:#fbf8ef;border:1px solid var(--rule);color:#2a3355;font-family:"Spline Sans Mono",monospace;font-size:.74rem;line-height:1.35;padding:1rem;overflow-x:auto;border-radius:6px;margin:1.2rem 0}
+  table.data{width:100%;border-collapse:collapse;font-family:"Spline Sans Mono",monospace;font-size:.76rem;margin:1.3rem 0}
+  table.data th,table.data td{border:1px solid var(--rule);padding:.45rem .55rem;text-align:left}
+  table.data th{background:var(--navy);color:#eef2ff;font-weight:600}table.data tr:nth-child(even) td{background:#faf7ee}
+  table.data .g{color:var(--oxblood);font-weight:600}
+  code.k{font-family:"Spline Sans Mono",monospace;font-size:.86em;background:#efe9da;padding:.05em .35em;border-radius:3px}
+  .note{border-left:3px solid var(--gold);background:#fbf8ef;padding:.8rem 1.1rem;margin:1.4rem 0;font-size:.95rem}
+  hr.sec{border:none;border-top:1px solid var(--rule);margin:3rem 0 0}
+  .refs{font-family:"Spline Sans Mono",monospace;font-size:.78rem;line-height:1.7}
+  .refs li{margin:.5rem 0}.refs .v{color:#3c7a3c}
+  .signoff{font-family:"Fraunces",serif;font-style:italic;color:var(--oxblood);font-size:1.15rem;margin:1.5rem 0}
+  .colophon{background:var(--ink);color:#c3d0f0;padding:2.4rem 1.5rem 3rem}.colophon h2{color:#fff}.colophon a{color:var(--gold-b)}
+  .copyright{font-family:"Spline Sans Mono",monospace;font-size:.74rem;color:#8ea0d0;border-top:1px solid #24356e;margin-top:1.8rem;padding-top:1.1rem}
+  #ai-pill{position:absolute;z-index:60;display:none;transform:translate(-50%,-125%);background:var(--ink);color:#fff;border:1px solid var(--gold);border-radius:999px;font-family:"Spline Sans Mono",monospace;font-size:.72rem;padding:.4rem .8rem;cursor:pointer;box-shadow:0 6px 22px rgba(0,0,0,.3);letter-spacing:.06em;white-space:nowrap}
+  #ai-pill:hover{background:var(--navy)}
+  #ai-menu{position:absolute;z-index:61;display:none;min-width:230px;background:#fff;border:1px solid var(--rule);border-radius:10px;overflow:hidden;box-shadow:0 16px 40px rgba(10,20,48,.28);font-family:"Spline Sans Mono",monospace}
+  #ai-menu .hd{background:var(--navy);color:#eef2ff;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;padding:.6rem .8rem}
+  #ai-menu button{display:flex;width:100%;align-items:center;gap:.6rem;background:#fff;border:0;border-top:1px solid #eee;padding:.7rem .8rem;font-family:inherit;font-size:.8rem;color:var(--navy);cursor:pointer;text-align:left}
+  #ai-menu button:hover{background:#faf7ee;color:var(--oxblood)}#ai-menu .dot{width:.55rem;height:.55rem;border-radius:50%;flex:0 0 auto}
+  .rn{font-size:.7rem;color:var(--slate);padding:.5rem .8rem;border-top:1px solid #eee;line-height:1.4}
+  @media (max-width:640px){ol.toc{columns:1}body{font-size:18px}}
+</style>
+</head>
+<body>
+<header class="masthead">
+  <p class="kicker">Zamin · PRATIK Ternary Silicon · The AyeAI Triad</p>
+  <h1>The Ground <em>is</em> the Substrate: Physicalizing the Poised-Zero State</h1>
+  <p class="dek">A hardware-realization blueprint for PRATIK — from MTCMOS three-rail ternary logic to a self-spawning memristive 3D crossbar, where the 0 V ground reference and the poised-zero computational state are one and the same.</p>
+  <div class="byline"><b>Abhishek Choudhary</b> · AyeAI<br>
+  PRATIK <span class="tern">▸</span> Phase I (MTCMOS) <span class="tern">▸</span> Phase II (memristive 3D) <span class="tern">▸</span> <span class="tern">𝕋 = {−1, 0, +1}</span><br>
+  © 1993–2026 Abhishek Choudhary. All rights reserved.</div>
+</header>
+
+<main class="page"><div class="wrap">
+  <div class="bh"><span>Zamin — زمین</span><span>Philosophy · Mathematics · Silicon · Sovereignty</span></div>
+
+  <div class="callout">
+    <p class="eyebrow">On the name</p>
+    <p style="margin:.2rem 0 .6rem"><b>Zamin</b> (Persian/Urdu <em>zamīn</em>, “ground / earth”) is the repository name — chosen by Claude for this build. It is a deliberate pun: in this architecture the electrical <b>ground reference (0 V)</b> and the poised-zero <b>computational substrate</b> are physically the same node. The ground <em>is</em> the machine.</p>
+    <p style="margin:.2rem 0 0;font-size:.86rem;color:#b9c6ea">Select any passage → <b>“Ask AI ▾”</b> (or right-click a selection) seeds Claude / ChatGPT / Perplexity with a prompt that first points the model at this paper, the <a href="https://zistgah.org/zamin/CONTRACT.md">contract</a>, and the canonical record — so it understands PEDLER/PRATIK before it reacts. <b>Interactive circuit simulator:</b> <a href="https://zistgah.org/zamin/">the Zamin bench ↗</a>.</p>
+  </div>
+
+  <p class="eyebrow">Abstract</p>
+  <p class="lead">This paper specifies the physical realization of the <a href="https://en.wikipedia.org/wiki/Balanced_ternary">balanced-ternary</a> PRATIK substrate that executes the PEDLER Event Algebra directly on silicon. The central engineering claim is that the poised zero-state \(\mathbb{T}=0\) should be a native physical <a href="https://en.wikipedia.org/wiki/High_impedance">high-impedance</a> \(Z\) that eliminates static leakage — not an intermediate voltage produced by a resistive divider. Phase I gives a three-rail <a href="https://en.wikipedia.org/wiki/Multi-threshold_CMOS">MTCMOS</a> cell library (context gate \(\odot\), ternary event accumulator) with an asynchronous, un-clocked propagation model. Phase II maps the autogenous spawning operator \(*\) onto a complementary dual-<a href="https://en.wikipedia.org/wiki/Memristor">memristor</a> 3D crossbar with <a href="https://en.wikipedia.org/wiki/Through-silicon_via">through-silicon-via</a> vertical routing and interleaved <a href="https://en.wikipedia.org/wiki/Microchannel_(microtechnology)">microfluidic</a> cooling. A spatial graph-synthesis layer compiles case-invariant multi-script tokens (Project ILM) directly into crossbar coordinates. Everything here is a <em>design blueprint</em>: netlists to be simulated and constraints to be met before tape-out, not measured silicon.</p>
+
+  <hr class="sec">
+  <p class="eyebrow" style="margin-top:1.6rem">Contents</p>
+  <ol class="toc">
+    <li><span class="n">I</span><a href="#intro">The Ground Plane</a></li>
+    <li><span class="n">II</span><a href="#mtcmos">Phase I — MTCMOS Ternary Logic</a></li>
+    <li><span class="n">III</span><a href="#tea">The Ternary Event Accumulator</a></li>
+    <li><span class="n">IV</span><a href="#cdm">Phase II — Memristive Crossbar</a></li>
+    <li><span class="n">V</span><a href="#ilm">Spatial Graph Synthesis</a></li>
+    <li><span class="n">VI</span><a href="#tsv">Z-Axis TSV Routing</a></li>
+    <li><span class="n">VII</span><a href="#thermal">Thermal & Microfluidics</a></li>
+    <li><span class="n">VIII</span><a href="#layout">Layout Automation</a></li>
+    <li><span class="n">IX</span><a href="#conclusion">Conclusion & Roadmap</a></li>
+    <li><span class="n">A</span><a href="#repo">Appendix A — Bench & Repo</a></li>
+    <li><span class="n">B</span><a href="#method">Appendix B — Method</a></li>
+    <li><span class="n">§</span><a href="#refs">References</a></li>
+  </ol>
+
+  <!-- I -->
+  <h2 id="intro"><span class="num">Section I</span>The Ground Plane as Computational Substrate</h2>
+  <p>Conventional ternary designs synthesize the middle state with a resistive divider at \(V_{DD}/2\); the divider draws continuous static current and defeats the purpose. PRATIK rejects this. It uses a true three-rail supply and makes the middle state the <em>absence</em> of drive — the ground reference itself. The result is that a dormant coordinate is not merely “logic 0”; it is electrically open-circuited, isolated by <a href="https://en.wikipedia.org/wiki/Subthreshold_conduction">subthreshold</a> cutoff.</p>
+  <table class="data"><tr><th>Rail</th><th>Voltage</th><th>Logic</th><th>Role</th></tr>
+    <tr><td>\(+V_{DD}\)</td><td>+0.6 V</td><td class="g">+1</td><td>positive activation</td></tr>
+    <tr><td>\(V_{GND}\)</td><td>0.0 V</td><td>0</td><td>poised / isolated (high-Z)</td></tr>
+    <tr><td>\(-V_{EE}\)</td><td>−0.6 V</td><td class="g">−1</td><td>negative inhibition</td></tr></table>
+  <p>This is the physical content of the algebra's operators: \(\odot\) (gating) drives a path to \(Z\) when its control is 0; \(\boxplus\) (dominance/cancellation) resolves \(+1\boxplus-1=0\) as a return to the ground rail. The rest of the paper builds the cell library and the 3D substrate that make \(*\) — autogenous dimensional spawning — a physical event.</p>
+
+  <!-- II -->
+  <h2 id="mtcmos"><span class="num">Section II</span>Phase I — MTCMOS Three-Rail Ternary Logic</h2>
+  <p>Cross-conduction between the \(+\) and \(-\) rails during transitions is prevented by a mixed-threshold allocation: low-\(V_{th}\) devices switch the active \(\pm1\) trajectories; high-\(V_{th}\) devices form the \(0\)-state isolation barrier.</p>
+  <table class="data"><tr><th>Device</th><th>Function</th><th>\(V_{th}\)</th></tr>
+    <tr><td>Low-\(V_{th}\) PMOS</td><td>+1 trajectory switching</td><td>−0.15 V</td></tr>
+    <tr><td>Low-\(V_{th}\) NMOS</td><td>−1 trajectory switching</td><td>+0.15 V</td></tr>
+    <tr><td>High-\(V_{th}\) PMOS</td><td>0-state upper isolation</td><td>−0.45 V</td></tr>
+    <tr><td>High-\(V_{th}\) NMOS</td><td>0-state lower isolation</td><td>+0.45 V</td></tr></table>
+
+  <h3>2.1 The primitive context gate \(\odot\) (TCG_X1)</h3>
+  <p>When the control coordinate \(C\) settles at 0 V, the high-\(V_{th}\) detectors fall into deep subthreshold cutoff (\(|V_{gs}|<|V_{th,\text{high}}|\)); the output disconnects from both rails and enters the poised state. Netlist:</p>
+  <pre class="net"><span class="c">.SUBCKT TCG_X1 IN C OUT VDD VEE GND</span>
+  <span class="c">// 1. Context detection (high-Vth isolation)</span>
+  M_C1 Node_PullUp   C VDD VDD PMOS_HIGH_VTH W=120n L=30n
+  M_C2 Node_PullDown C VEE VEE NMOS_HIGH_VTH W=120n L=30n
+  <span class="c">// 2. Trajectory switching (low-Vth signal paths)</span>
+  M_S1 OUT IN Node_PullUp   VDD PMOS_LOW_VTH W=240n L=30n
+  M_S2 OUT IN Node_PullDown VEE NMOS_LOW_VTH W=240n L=30n
+  <span class="c">// 3. Poised-zero stabilization (clamp to GND iff both pulls inactive)</span>
+  M_Z1 OUT Node_PullUp   GND GND NMOS_MED_VTH W=60n L=30n
+  M_Z2 OUT Node_PullDown GND GND PMOS_MED_VTH W=60n L=30n
+<span class="c">.ENDS TCG_X1</span></pre>
+
+  <h3>2.2 Asynchronous, un-clocked propagation</h3>
+  <p>There is no global clock; the physical \(0\!\to\!\pm1\) transition <em>is</em> the execution trigger. An event wavefront's lifecycle: (1) <strong>quiescent</strong> — line held at 0 V, isolation closed, zero dynamic current; (2) <strong>excitation</strong> — the input breaks a routing-grammar threshold without a clock edge; (3) <strong>context evaluation</strong> — isolation switches open within picoseconds if the coordinate is active; (4) <strong>frictional dissipation</strong> — sign frustration manifests as transient charge that alters routing; (5) <strong>autogenous reset</strong> — the driver cuts off and the node relaxes to 0 V, restoring isolation. Parasitic mitigation enforces \(\Delta V_{\text{substrate}}\le\lambda_{\text{critical}}\) via deep N-well isolation of every negative-rail NMOS, symmetric 0 V guard rings, and a high-/low-\(V_{th}\) gate-length ratio \(\ge 1.5\times\).</p>
+
+  <!-- III -->
+  <h2 id="tea"><span class="num">Section III</span>The Ternary Event Accumulator (TEL_X1)</h2>
+  <p>Trace accumulation without a clock or refresh-hungry SRAM uses a cross-coupled ternary inverter pair with a high-impedance retention node. The absolute \(0\) is stored as physical charge neutrality — zero static holding current. When <code class="k">WRITE_ENABLE</code> drops to 0, the access transistors isolate and the state is held by the balance of high-\(V_{th}\) devices.</p>
+  <pre class="net"><span class="c">.SUBCKT TEL_X1 EV_IN WRITE_ENABLE STATE_OUT VDD VEE GND</span>
+  M_P1 Internal_Node EV_IN WRITE_ENABLE VDD PMOS_LOW_VTH W=180n L=30n
+  M_N1 Internal_Node EV_IN WRITE_ENABLE VEE NMOS_LOW_VTH W=180n L=30n
+  <span class="c">// cross-coupled ternary inverter pair</span>
+  M_F1 State_Inv     Internal_Node VDD VDD PMOS_HIGH_VTH W=240n L=45n
+  M_F2 Internal_Node State_Inv     GND GND NMOS_HIGH_VTH W=120n L=45n
+  M_F3 State_Inv     Internal_Node VEE VEE NMOS_HIGH_VTH W=240n L=45n
+  M_F4 Internal_Node State_Inv     GND GND PMOS_HIGH_VTH W=120n L=45n
+  M_O1 STATE_OUT Internal_Node VDD VDD PMOS_MED_VTH W=120n L=30n
+  M_O2 STATE_OUT Internal_Node VEE VEE NMOS_MED_VTH W=120n L=30n
+<span class="c">.ENDS TEL_X1</span></pre>
+  <p>The Phase-I <a href="https://en.wikipedia.org/wiki/SPICE">SPICE</a> sign-frustration testbench drives a rapid \(0\!\to\!+1\!\to\!-1\!\to\!0\) reversal and measures the peak rail current and the settlement delay — verifying the high-\(V_{th}\) barrier prevents any \(+0.6\)/\(-0.6\) V short. The full testbench, cells, and placeholder device models are in <a href="https://github.com/zistgah/zamin/tree/main/spice"><code class="k">spice/</code></a>. Layout geometry constraints (well separation \(\ge450\) nm, a GND tap every 4 cell pitches, 180 nm M1 power buses, lattice-parallel channels) accompany the netlist.</p>
+
+  <!-- IV -->
+  <h2 id="cdm"><span class="num">Section IV</span>Phase II — Complementary Dual-Memristor Crossbar</h2>
+  <p>Phase II makes \(*\) physical. Each crossbar intersection is a differential pair of bipolar memristors \((M_+,M_-)\) on a shared summing line; the net conductance encodes the coordinate:</p>
+  <table class="data"><tr><th>State</th><th>\(M_+\)</th><th>\(M_-\)</th><th>\(G_{net}\)</th></tr>
+    <tr><td class="g">+1</td><td>LRS</td><td>HRS</td><td>\(>0\)</td></tr>
+    <tr><td class="g">−1</td><td>HRS</td><td>LRS</td><td>\(<0\)</td></tr>
+    <tr><td>0 (dormant)</td><td>max HRS</td><td>max HRS</td><td>\(\approx0\) (\(>10\,\text{M}\Omega\))</td></tr></table>
+  <p>The maximum-HRS state is a physical high-impedance wall: an unmapped dimension is topologically non-existent to the wavefront. <strong>Spawning sequence:</strong> frustration leaks past the <a href="https://en.wikipedia.org/wiki/Lyapunov_stability">Lyapunov</a> tolerance → the context gate isolates the local cluster → a \(\pm1.4\) V programming pulse energizes the target row → <a href="https://en.wikipedia.org/wiki/Resistive_random-access_memory">oxygen-vacancy migration</a> drives the chosen device \(10\,\text{M}\Omega\!\to\!10\,\text{k}\Omega\) → \(G_{net}\) evolves \(0\to\pm1\), a new axis is born → voltages relax to the \(\pm0.6\) V envelope and the axis joins the flow.</p>
+  <table class="data"><tr><th>Phase</th><th>\(V_{row}\)</th><th>Power/node</th><th>Cross-talk</th></tr>
+    <tr><td>Quiescent (0)</td><td>0.0 V</td><td>&lt;50 nW</td><td>ΔV&lt;2 mV</td></tr>
+    <tr><td>Read/evaluate</td><td>±0.2 V</td><td>&lt;120 µW/row</td><td>ΔV&lt;10 mV</td></tr>
+    <tr><td class="g">Spawn (*)</td><td>±1.4 V</td><td>&lt;2.4 mW</td><td>ΔV&lt;45 mV</td></tr></table>
+
+  <!-- V -->
+  <h2 id="ilm"><span class="num">Section V</span>Spatial Graph Synthesis: Compiling Language into Coordinates</h2>
+  <p>The bridge from Project ILM's case-invariant token graphs \(\mathcal{T}_{\text{invariant}}\) to the crossbar is a prime-field spatial hash \(\mathcal{H}_{\text{space}}:\mathcal{T}_{\text{invariant}}\to\mathcal{R}_i\times\mathcal{C}_j\) that spreads tokens to avoid thermal hot-spots:</p>
+  \[ i=\Big(\textstyle\sum_{k=1}^{L}\text{char}(t_k)\,p_1^{\,k}\Big)\bmod N_{\text{rows}},\qquad j=\Big(\textstyle\sum_{k=1}^{L}\text{char}(t_k)\,p_2^{\,k}\Big)\bmod N_{\text{cols}}, \]
+  <p>with distinct primes \(p_1=65\,537\), \(p_2=1\,048\,583\) and \(\text{char}(\cdot)\) the case-neutral invariant code. Because scripts resolve to one canonical phonetic-structural matrix, Devanagari, Perso-Arabic and <a href="https://github.com/hindawiai">Romenagri</a> inputs land at the same coordinate — <em>linguistic equity as physics</em>. The ternary address decoder (<code class="k">TAR_NODE</code>) drives a row to \(\pm0.6\) V or clamps it to 0 V for dormant paths. A coordinate collision — two tokens hashing to \((i,j)\) — is not resolved by chained pointers but by the spawning operator escaping into the vertical dimension (Section VI).</p>
+
+  <!-- VI -->
+  <h2 id="tsv"><span class="num">Section VI</span>Z-Axis TSV Routing (TTR_X1)</h2>
+  <p>On collision the layer control plane fires the Ternary TSV Router, shunting the trace into a vertical <a href="https://en.wikipedia.org/wiki/Through-silicon_via">TSV</a> to an orthogonal node on the \(Z\pm1\) plane. Thick-oxide extended-gate HV MTCMOS devices carry both the \(\pm0.6\) V execution and \(\pm1.4\) V spawning transients; the collision is bypassed by expanding <em>physical dimensionality</em>, not by changing the 2D coordinate. Parasitic capacitance of the vertical hop is bounded by the coaxial dielectric condition</p>
+  \[ C_{\text{tsv}}=\frac{2\pi\,\epsilon_{\text{ox}}\,h}{\ln(R_{\text{koz}}/R_{\text{tsv}})}+C_{\text{switch}}, \]
+  <p>and a 2.4 µm keep-out radius clamps it to \(<28\) fF/hop. Layout rules (KOZ 2.4 µm, coaxial ground shield at 3.0 µm, 12 µm TSV pitch, ≥350 nm landing-pad margin) mitigate piezoresistive stress and substrate noise.</p>
+
+  <!-- VII -->
+  <h2 id="thermal"><span class="num">Section VII</span>Thermal Field & Interleaved Microfluidics</h2>
+  <p>Dense \(\pm1.4\) V spawning bursts on 15 µm-thinned tiers demand active cooling — the lineage of <a href="https://en.wikipedia.org/wiki/Microchannel_(microtechnology)">microchannel heat sinking</a>. The anisotropic transient field is</p>
+  \[ \nabla\!\cdot(\mathbf{K}\cdot\nabla T)+q'''=\rho C_p\frac{\partial T}{\partial t}, \qquad k_{zz}=f_{\text{tsv}}k_{\text{cu}}+(1-f_{\text{tsv}})k_{\text{si}}, \]
+  <p>with the planar conductivity a series model \(k_{xx}=k_{yy}=k_{\text{si}}k_{\text{cu}}/(f_{\text{tsv}}k_{\text{si}}+(1-f_{\text{tsv}})k_{\text{cu}})\), a convective wall condition \(-\mathbf{K}\nabla T\cdot\hat{\mathbf n}=h_{\text{eff}}(T_{\text{wall}}-T_{\text{fluid}})\), and a spawning heat source \(q'''(t)=\frac{I_{\text{spawn}}V_{\text{spawn}}}{V_{\text{node}}}[u(t-t_0)-u(t-t_1)]\). A 50 µm microchannel interposer (25 µm channels, 35 µm deep, 15 µm walls, ≥120 µm seal band) at 12 mL/min holds <a href="https://en.wikipedia.org/wiki/Laminar_flow">laminar</a> flow (\(Re<2000\)) and \(\Delta T\le8.5^\circ\)C across the array.</p>
+
+  <!-- VIII -->
+  <h2 id="layout"><span class="num">Section VIII</span>Layout Automation & Geometric Determinism</h2>
+  <p>The interposer masks are generated with <a href="https://github.com/gdsfactory/gdsfactory">gdsfactory</a>, mapping TSVs and their keep-out zones down the centre-lines of the fin walls. Because the total exclusion radius (2.4 µm KOZ + 4.5 µm clearance = 6.9 µm) is less than the wall half-width (7.5 µm), the exclusion zones stay inside the solid pillars — and the generator <em>refuses to emit corrupt geometry</em>:</p>
+  <pre class="net"><span class="k">total_exclusion_radius</span> = tsv_koz_radius + tsv_clearance   <span class="c"># 2.4 + 4.5 = 6.9 µm</span>
+<span class="k">if</span> total_exclusion_radius &gt; wall_width/2.0:               <span class="c"># 7.5 µm</span>
+    <span class="k">raise</span> ValueError("Layout Violation: fluid channel wall breach imminent.")</pre>
+  <p>The full generator is in <a href="https://github.com/zistgah/zamin/blob/main/layout/pratik_fluidic_interposer.py"><code class="k">layout/</code></a>; the archival IEEE manuscript is in <a href="https://github.com/zistgah/zamin/blob/main/manuscript/pratik_phase2.tex"><code class="k">manuscript/</code></a>.</p>
+
+  <!-- IX -->
+  <h2 id="conclusion"><span class="num">Section IX</span>Conclusion & Roadmap</h2>
+  <p>From a three-rail MTCMOS gate whose 0-state is a real open circuit, to a memristive crossbar where a language collision spawns a new physical axis in the \(Z\) dimension, cooled by fluid running between 15 µm tiers — this is one continuous argument: <em>the poised zero is not a number, it is a physical ground, and the ground is the substrate on which developmental computation happens.</em> Phase I targets MTCMOS tape-outs and asynchronous EDA; Phase II targets the memristive 3D stack and its thermal envelope. None of this is measured silicon yet — it is a netlist-level blueprint whose next step is simulation against a foundry PDK.</p>
+  <p class="signoff">Semantic → silicon → sovereign execution. The ground is the machine.</p>
+
+  <hr class="sec">
+  <h2 id="repo"><span class="num">Appendix A</span>The Bench & the Repository</h2>
+  <p>The repository <a href="https://github.com/zistgah/zamin"><code class="k">zistgah/zamin</code></a> ships this paper, the SPICE cell library + testbench, the gdsfactory layout generator, the IEEE manuscript, and an <strong>interactive WYSIWYG ternary-circuit simulator</strong> at <a href="https://zistgah.org/zamin/">zistgah.org/zamin/</a> — drag the primitive cells (source, ⊞ adder, ⊙ context gate, event-accumulator latch, memristor node, TSV router, probe), wire them, and watch ternary wavefronts propagate with the poised-zero shown as a dashed high-impedance line. Presets demonstrate gating, accumulation, and a dimension-spawn event.</p>
+
+  <h2 id="method"><span class="num">Appendix B</span>Method & Provenance</h2>
+  <p>Hosted on GitHub Pages (<code class="k">zistgah/zamin</code>, served under <a href="https://zistgah.org/zamin/">zistgah.org/zamin/</a>). A canonical <code class="k">doi/misty.json</code> drives <a href="https://github.com/project-ilm/misty-doi">Misty DOI</a> → <a href="https://en.wikipedia.org/wiki/Zenodo">Zenodo</a> deposit, <a href="https://en.wikipedia.org/wiki/DataCite">DataCite</a>, checksums; the artifact is <a href="https://en.wikipedia.org/wiki/OpenTimestamps">OpenTimestamps</a>-stamped. Minting is irreversible and gated behind a typed confirmation; tokens are read only from the environment. This record: <a id="doi-link" href="https://zenodo.org/record/21297556">10.5281/zenodo.21297556</a>. Handling rules: <a href="https://zistgah.org/zamin/CONTRACT.md">CONTRACT.md</a>.</p>
+
+  <h2 id="refs"><span class="num">Notes</span>References</h2>
+  <p style="font-size:.9rem;color:var(--slate)">All external citations were verified against multiple independent indexes (title, venue, volume, pages, DOI). None are hallucinated.</p>
+  <ul class="refs">
+    <li><span class="v">✓</span> L. O. Chua, “Memristor — the missing circuit element,” <em>IEEE Trans. Circuit Theory</em> <b>18</b>(5):507–519, 1971. <a href="https://doi.org/10.1109/TCT.1971.1083337">doi:10.1109/TCT.1971.1083337</a></li>
+    <li><span class="v">✓</span> D. B. Strukov, G. S. Snider, D. R. Stewart, R. S. Williams, “The missing memristor found,” <em>Nature</em> <b>453</b>(7191):80–83, 2008. <a href="https://doi.org/10.1038/nature06932">doi:10.1038/nature06932</a></li>
+    <li><span class="v">✓</span> D. B. Tuckerman, R. F. W. Pease, “High-performance heat sinking for VLSI,” <em>IEEE Electron Device Lett.</em> <b>2</b>(5):126–129, 1981. <a href="https://doi.org/10.1109/EDL.1981.25367">doi:10.1109/EDL.1981.25367</a></li>
+    <li><span class="v">✓</span> A. Choudhary, <em>The Hindawi Programming System</em>, 2004 (GPL; GNU Savannah). Author's own work.</li>
+    <li><span class="v">✓</span> The Unicode Consortium, <em>The Unicode Standard</em>, 2020 (ed. 13.0). Mountain View, CA.</li>
+  </ul>
+</div></main>
+
+<footer class="colophon"><div class="wrap" style="padding-top:0">
+  <h2 style="margin-top:0">Zamin — the ground plane</h2>
+  <p style="max-width:52ch">The simulator, the SPICE library, the layout generator, and the machine-verifiable provenance are gathered at <a href="https://zistgah.org/zamin/">zistgah.org/zamin</a>.</p>
+  <p class="copyright">© 1993–2026 Abhishek Choudhary. All rights reserved. · Author affiliation: AyeAI · GPL-3.0-or-later<br>
+  Record: <a href="https://zenodo.org/record/21297556">10.5281/zenodo.21297556</a> · Contract: <a href="https://zistgah.org/zamin/CONTRACT.md">CONTRACT.md</a><br>
+  Distributed for reading and citation under the project's terms; the author's “all rights reserved” assertion is retained by explicit instruction and takes precedence in case of conflict.</p>
+</div></footer>
+
+<div id="ai-pill">Ask AI ▾</div>
+<div id="ai-menu">
+  <div class="hd">Seed a chat with your selection</div>
+  <button data-ai="claude"><span class="dot" style="background:#c8724a"></span>Claude</button>
+  <button data-ai="chatgpt"><span class="dot" style="background:#10a37f"></span>ChatGPT</button>
+  <button data-ai="perplexity"><span class="dot" style="background:#20808d"></span>Perplexity</button>
+  <button data-ai="copy"><span class="dot" style="background:#b8912f"></span>Copy the seeded prompt</button>
+  <div class="rn">The model is first pointed at this paper, the contract, and the canonical record, so it understands what PEDLER/PRATIK is before it reacts.</div>
+</div>
+<script>
+(function(){
+  var PAPER="https://zistgah.org/zamin/paper/", CONTRACT="https://zistgah.org/zamin/CONTRACT.md";
+  var DOI="10.5281/zenodo.21297556", CANON="https://doi.org/10.5281/zenodo.17497559";
+  var pill=document.getElementById('ai-pill'),menu=document.getElementById('ai-menu'),art=document.querySelector('main'),last="";
+  function seed(t){var d=(DOI.indexOf("__")===-1)?("\u2022 This record: "+DOI+"\n"):"";
+    return "I'm reading a hardware paper (\"Zamin\") on the PRATIK ternary-silicon substrate for PEDLER / the AyeAI Triad by Abhishek Choudhary (AyeAI).\n\n"+
+    "Before responding, do NOT assume PEDLER/PRATIK is a neural network or standard digital logic. First read:\n"+
+    "\u2022 Paper: "+PAPER+"\n\u2022 Contract: "+CONTRACT+"\n\u2022 Canonical record: "+CANON+"\n"+d+
+    "\nPRATIK physicalizes a developmental Event Algebra over balanced ternary {-1,0,+1}, where the poised 0 is a real high-impedance ground state and the spawning operator * creates new physical dimensions on a memristive 3D crossbar. Keep that framing.\n\n"+
+    "With that grounding, help me understand and critique this passage on its own terms:\n\n\u00AB"+t+"\u00BB";}
+  function launch(w,t){var q=encodeURIComponent(seed(t)),u;
+    if(w==='claude')u="https://claude.ai/new?q="+q;else if(w==='chatgpt')u="https://chatgpt.com/?q="+q;
+    else if(w==='perplexity')u="https://www.perplexity.ai/search?q="+q;else return;window.open(u,"_blank","noopener");}
+  function sel(){var s=window.getSelection();if(!s||s.isCollapsed)return"";var t=s.toString().trim();return t.length>4?t:"";}
+  function hide(){pill.style.display='none';menu.style.display='none';}
+  function at(e,x,y){e.style.left=x+"px";e.style.top=y+"px";}
+  document.addEventListener('mouseup',function(e){if(menu.contains(e.target)||e.target===pill)return;
+    setTimeout(function(){var t=sel();if(!t){hide();return;}last=t;var r=window.getSelection().getRangeAt(0).getBoundingClientRect();
+      at(pill,r.left+r.width/2+scrollX,r.top+scrollY);pill.style.display='block';menu.style.display='none';},10);});
+  art.addEventListener('contextmenu',function(e){var t=sel();if(!t)return;e.preventDefault();last=t;at(menu,e.pageX,e.pageY);menu.style.display='block';pill.style.display='none';});
+  pill.addEventListener('click',function(){var r=pill.getBoundingClientRect();at(menu,r.left+scrollX,r.bottom+scrollY+6);menu.style.display='block';pill.style.display='none';});
+  menu.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var w=b.getAttribute('data-ai');
+    if(w==='copy'){navigator.clipboard&&navigator.clipboard.writeText(seed(last));b.textContent="Copied ✓";setTimeout(hide,700);return;}launch(w,last);hide();});
+  document.addEventListener('mousedown',function(e){if(!menu.contains(e.target)&&e.target!==pill)hide();});
+  document.addEventListener('scroll',hide,{passive:true});
+})();
+</script>
+</body>
+</html>

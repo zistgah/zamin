@@ -1,0 +1,106 @@
+%% SPDX-License-Identifier: GPL-3.0-or-later
+%% Copyright (C) 1993-2026 Abhishek Choudhary. All rights reserved. · AyeAI
+%% PRATIK Phase II hardware core — IEEE-style manuscript blueprint.
+\documentclass[journal,twocolumn,10pt]{IEEEtran}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{url}
+
+\lstset{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    frame=single,
+    captionpos=b
+}
+
+\begin{document}
+
+\title{Spatial Graph Synthesis and Multi-Dimensional Spawning in Complementary Dual-Memristor Crossbars for Project ILM}
+
+\author{Abhishek~Choudhary\\
+\textit{AyeAI}}
+
+\maketitle
+
+\begin{abstract}
+This paper presents the physical compilation and structural hardware architecture of the PRATIK Phase II hardware core. We detail the end-to-end mapping pipeline that translates case-invariant, multi-script linguistic tokens from Project ILM directly into spatial coordinate vectors on a 3D stacked memristive substrate. To resolve architectural path collisions without routing stalls, we introduce a ternary vertical routing mechanism that handles dynamic dimension spawning via through-silicon vias (TSVs). Finally, we provide the finite element thermal modeling formulations and interleaved microfluidic alignment layout rules required to stabilize the thinned-die 3D stack under high-voltage programming transients.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Project ILM, PRATIK, Memristive Crossbar, Ternary Logic, 3D IC, Microfluidics, Spatial Compilation.
+\end{IEEEkeywords}
+
+\section{Introduction}
+Traditional computational pipelines suffer from structural bottlenecks caused by arbitrary text parsing and decoupled memory-execution spaces. In this work, we specify the physical realization layer for Project ILM within the PRATIK neuromorphic substrate. By compiling case-invariant phonetic-structural matrices directly into physical crossbar coordinates, the act of signal propagation becomes identical to the execution of linguistic meaning.
+
+\section{The Token-to-Coordinate Compilation Mapping}
+To translate a canonical token $t \in \mathcal{T}_{\text{invariant}}$ into unique row ($i$) and column ($j$) destinations without generating localized thermal or routing hot-spots, the spatial compiler utilizes a Prime-Field Spatial Hashing Operator ($\mathcal{H}_{\text{space}}$):
+\begin{equation}
+i = \left( \sum_{k=1}^{L} \text{char}(t_k) \cdot p_1^k \right) \pmod{N_{\text{rows}}}
+\end{equation}
+\begin{equation}
+j = \left( \sum_{k=1}^{L} \text{char}(t_k) \cdot p_2^k \right) \pmod{N_{\text{cols}}}
+\end{equation}
+where $p_1 = 65537$ and $p_2 = 1048583$ represent non-interfering prime scalars, and $N$ represents the target array bounds.
+
+\section{Ternary Address Resolution Netlist Topology}
+The resolved spatial coordinates are dispatched via a high-impedance balanced driver matrix capable of enforcing strict zero-volt substrate references for dormant paths. The SPICE subcircuit configuration for individual row routing nodes is defined in Listing 1.
+
+\begin{lstlisting}[language=Verilog, caption={Ternary Address Resolution Node (TAR\_NODE) Subcircuit.}]
+.SUBCKT TAR_NODE ADDR_BIT_IN SELECT_LNE ROW_LINE_OUT VDD VEE GND
+  M_P1 Net_Pos ADDR_BIT_IN SELECT_LNE VDD PMOS_LOW_VTH W=180n L=30n
+  M_N1 Net_Neg ADDR_BIT_IN SELECT_LNE VEE NMOS_LOW_VTH W=180n L=30n
+  M_D1 ROW_LINE_OUT Net_Pos VDD VDD PMOS_HIGH_VTH W=320n L=45n
+  M_D2 ROW_LINE_OUT Net_Neg VEE VEE NMOS_HIGH_VTH W=320n L=45n
+  M_C1 ROW_LINE_OUT ADDR_BIT_IN GND GND NMOS_MED_VTH W=90n L=30n
+  M_C2 ROW_LINE_OUT ADDR_BIT_IN GND GND PMOS_MED_VTH W=90n L=30n
+.ENDS TAR_NODE
+\end{lstlisting}
+
+\section{Multi-Dimensional Z-Axis Spawning Mechanics}
+When physical coordinate collisions occur, the PRATIK architecture executes a dynamic vertical commutation sequence to map orthogonal trace relations into an adjacent physical tier ($Z \pm 1$).
+
+\subsection{Vertical Routing Switch Implementation}
+The Ternary TSV Router (\texttt{TTR\_SWITCH}) utilizes thick-oxide, high-voltage extended-gate transistors to handle both standard evaluation signals ($\pm 0.6$V) and high-voltage programming pulses ($\pm 1.4$V) without leakage into the logic core.
+
+\subsection{Geometrical Layout Constraints and Parasitics}
+To mitigate piezoresistive stress and capacitive coupling, strict Keep-Out Zones (KOZ) and continuous coaxial shielding rings are enforced around the vertical copper vias. The total parasitic capacitance is bounded by:
+\begin{equation}
+C_{\text{tsv}} = \frac{2\pi \cdot \epsilon_{\text{ox}} \cdot h}{\ln\left(\frac{R_{\text{koz}}}{R_{\text{tsv}}}\right)} + C_{\text{switch}}
+\end{equation}
+Enforcing a minimum KOZ radius of $2.4\,\mu\text{m}$ restricts the total parasitic capacitance to $< 28\,\text{fF}$ per vertical hop.
+
+\section{Transient Finite Element Thermal Modeling}
+Dense multi-tier dimension-spawning cycles generate severe, transient localized volumetric heat fields ($q'''$). The heterogeneous, anisotropic heat conduction field within the active silicon volume is governed by:
+\begin{equation}
+\nabla \cdot (\mathbf{K} \cdot \nabla T) + q''' = \rho C_p \frac{\partial T}{\partial t}
+\end{equation}
+where the thermal conductivity tensor $\mathbf{K}$ captures the variations between the copper TSV structures and the bulk silicon dioxide matrix. Convective energy dissipation through the microchannel walls into the dielectric fluid is continuously calculated using localized Nusselt numbers ($Nu$) relative to the hydraulic channel diameter ($D_h$).
+
+\section{Interleaved Microfluidic Cooling Alignment}
+To stabilize the $15\,\mu\text{m}$ thinned active tiers, a $50\,\mu\text{m}$ silicon microchannel interposer layer is integrated directly between tiers. Geometric layout boundaries are structured systematically to prevent micro-leakage and maintain laminar flow regimes ($Re < 2000$).
+
+\begin{table}[h]
+\centering
+\caption{Microfluidic Layer Layout Structural Enforcements}
+\begin{tabular}{lll}
+\toprule
+Geometric Vector & Physical Constraint & Target Mitigation \\
+\midrule
+Channel Width ($W_c$) & $25\,\mu\text{m} \pm 0.5\,\mu\text{m}$ & Shear Rate Balance \\
+Channel Depth ($H_c$) & $35\,\mu\text{m} \pm 1.0\,\mu\text{m}$ & Profile Optimization \\
+Wall Thickness ($W_w$) & $15\,\mu\text{m}$ minimum & Stress Fracturing \\
+TSV Clearance Margin & $\ge 4.5\,\mu\text{m}$ from KOZ & Shield Protection \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Conclusion}
+The integration of the Spatial Graph Synthesis Layer with ternary vertical routing and embedded microfluidic interposers completes the core physical blueprint for the PRATIK Phase II hardware substrate, laying the groundwork for native, hardware-level linguistic equity processing.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

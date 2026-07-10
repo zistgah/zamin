@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<!--
+  SPDX-License-Identifier: GPL-3.0-or-later
+  Copyright (C) 1993-2026 Abhishek Choudhary. All rights reserved. · AyeAI
+  Zamin Bench — a dependency-free WYSIWYG builder/simulator for PRATIK ternary
+  circuits. Primitive cells map to the SPICE library in spice/: source, ground,
+  ⊞ dominance adder, ⊙ context gate (0 ⇒ high-impedance), TEL event-accumulator
+  latch, TMC memristor node (dimension spawn 0→±1), TTR TSV router, probe.
+-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zamin Bench — Ternary Circuit Simulator</title>
+<style>
+  :root{--ink:#0a1430;--navy:#0b1e46;--panel:#0f2350;--gold:#c8a24a;--gold-d:#b8912f;
+    --ox:#c8465a;--ox-d:#7a1f2b;--slate:#7f8fbf;--pos:#c8a24a;--neg:#c8465a;--zero:#586089;--rule:#24356e}
+  *{box-sizing:border-box}html,body{margin:0;height:100%}
+  body{background:var(--ink);color:#e7ecff;font:14px/1.5 "Spline Sans Mono",ui-monospace,monospace;display:flex;flex-direction:column;overflow:hidden}
+  header{padding:.6rem 1rem;border-bottom:1px solid var(--gold);background:linear-gradient(180deg,#0b1e46,#0a1430);display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap}
+  header h1{font:600 1rem/1.1 Georgia,serif;margin:0;color:#fff}header h1 b{color:var(--gold)}
+  header .sub{font-size:.7rem;color:var(--slate);letter-spacing:.12em;text-transform:uppercase}
+  header a{color:var(--gold);text-decoration:none;margin-left:auto;font-size:.72rem}header a:hover{text-decoration:underline}
+  main{flex:1;display:grid;grid-template-columns:170px 1fr 300px;min-height:0}
+  .palette{border-right:1px solid var(--rule);background:var(--navy);padding:.6rem;overflow:auto}
+  .palette h3{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d);margin:.7rem 0 .3rem}
+  .palette button{display:block;width:100%;text-align:left;background:var(--panel);color:#e7ecff;border:1px solid var(--rule);border-radius:6px;padding:.4rem .5rem;font:inherit;font-size:.74rem;cursor:pointer;margin:.25rem 0}
+  .palette button:hover{border-color:var(--gold);color:#fff}
+  #stage{position:relative;overflow:hidden;background:
+     radial-gradient(circle at 20px 20px, rgba(60,80,150,.13) 1px, transparent 1px);background-size:22px 22px;min-width:0}
+  #wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  #wires path{pointer-events:stroke;cursor:pointer}
+  .node{position:absolute;width:150px;background:#0f2350;border:1px solid var(--rule);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.35);user-select:none}
+  .node .hdr{display:flex;align-items:center;justify-content:space-between;background:#13285c;border-bottom:1px solid var(--rule);padding:.25rem .5rem;border-radius:8px 8px 0 0;cursor:grab;font-size:.72rem;color:#cdd6f2}
+  .node .hdr .x{cursor:pointer;color:var(--slate);padding:0 .2rem}.node .hdr .x:hover{color:var(--ox)}
+  .node .body{padding:.4rem .5rem;min-height:34px;position:relative}
+  .port{position:absolute;width:12px;height:12px;border-radius:50%;background:#0a1430;border:2px solid var(--slate);cursor:crosshair}
+  .port:hover{border-color:var(--gold);background:#1a2b5a}
+  .port.armed{border-color:var(--gold);background:var(--gold)}
+  .port .lbl{position:absolute;font-size:.6rem;color:var(--slate);white-space:nowrap;top:-2px}
+  .port.inp .lbl{left:16px}.port.out .lbl{right:16px;text-align:right}
+  .val{display:inline-block;min-width:20px;text-align:center;border-radius:4px;font-weight:600;padding:.05rem .3rem;font-size:.8rem}
+  .val.p{background:rgba(200,162,74,.18);color:var(--pos)}
+  .val.n{background:rgba(200,70,90,.18);color:var(--neg)}
+  .val.z{background:rgba(88,96,137,.18);color:var(--zero)}
+  .node.src .body{cursor:pointer}
+  .probe .big{font-size:1.5rem;text-align:center}
+  .toolbar{position:absolute;left:12px;top:12px;display:flex;gap:.4rem;z-index:20;flex-wrap:wrap}
+  .toolbar button{background:var(--panel);color:#e7ecff;border:1px solid var(--rule);border-radius:7px;padding:.4rem .6rem;font:inherit;font-size:.74rem;cursor:pointer}
+  .toolbar button:hover{border-color:var(--gold);color:#fff}.toolbar button.pri{background:var(--gold-d);border-color:var(--gold);color:#141414;font-weight:600}
+  .hint{position:absolute;left:12px;bottom:12px;font-size:.68rem;color:#9fb0e0;background:rgba(10,20,48,.72);border:1px solid var(--rule);border-radius:8px;padding:.4rem .6rem;max-width:60%}
+  aside{border-left:1px solid var(--rule);background:var(--navy);display:flex;flex-direction:column;min-height:0}
+  aside .sec{padding:.6rem .7rem;border-bottom:1px solid var(--rule)}
+  aside h3{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d);margin:0 0 .4rem}
+  aside select{width:100%;background:var(--panel);color:#e7ecff;border:1px solid var(--rule);border-radius:6px;padding:.35rem;font:inherit;font-size:.74rem}
+  .legend div{font-size:.7rem;margin:.15rem 0;color:#c3d0f0}.legend .sw{display:inline-block;width:1.4em;height:0;border-top-width:3px;border-top-style:solid;margin-right:.4em;vertical-align:middle}
+  #inspect{overflow:auto;flex:1;font-size:.72rem;color:#c3d0f0;padding:.6rem .7rem}
+  #inspect table{width:100%;border-collapse:collapse}#inspect td{border:1px solid var(--rule);padding:.15rem .35rem}
+  footer{padding:.4rem 1rem;border-top:1px solid var(--rule);font-size:.64rem;color:var(--slate);display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+  footer a{color:var(--gold-d)}
+  @media (max-width:900px){main{grid-template-columns:130px 1fr}aside{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1><b>Zamin</b> Bench — Ternary Circuit Simulator</h1>
+  <span class="sub">balanced ternary · poised-0 = high-impedance</span>
+  <a href="paper/">the paper ↗</a>
+</header>
+<main>
+  <div class="palette">
+    <h3>Sources</h3>
+    <button data-add="SRC">＋ Source (−1/0/+1)</button>
+    <button data-add="GND">＋ Ground (0)</button>
+    <h3>Ternary logic</h3>
+    <button data-add="ADD">＋ ⊞ Adder</button>
+    <button data-add="GATE">＋ ⊙ Context gate</button>
+    <button data-add="ROUTER">＋ TSV router</button>
+    <h3>Memory / substrate</h3>
+    <button data-add="LATCH">＋ Event latch (TEL)</button>
+    <button data-add="MEM">＋ Memristor (spawn)</button>
+    <h3>Output</h3>
+    <button data-add="PROBE">＋ Probe</button>
+  </div>
+
+  <div id="stage">
+    <svg id="wires"></svg>
+    <div class="toolbar">
+      <button class="pri" id="b-step">▶ Step</button>
+      <button id="b-run">⟳ Run</button>
+      <button id="b-reset">⟲ Reset state</button>
+      <button id="b-clear">✕ Clear</button>
+    </div>
+    <div class="hint" id="hint">Add a cell, then click an <b>output</b> port then an <b>input</b> port to wire. Click a Source to cycle −1/0/+1. Click a wire to delete it. Or load a preset →</div>
+  </div>
+
+  <aside>
+    <div class="sec"><h3>Presets</h3>
+      <select id="preset">
+        <option value="">— load a circuit —</option>
+        <option value="gate">⊙ Context gate (0 ⇒ high-Z)</option>
+        <option value="acc">Event accumulator (⊞ latch)</option>
+        <option value="spawn">Dimension spawn (memristor)</option>
+        <option value="tsv">TSV router (up/down/isolate)</option>
+      </select>
+    </div>
+    <div class="sec legend"><h3>Wire states</h3>
+      <div><span class="sw" style="border-color:var(--pos)"></span>+1 activation</div>
+      <div><span class="sw" style="border-color:var(--neg)"></span>−1 inhibition</div>
+      <div><span class="sw" style="border-color:var(--zero);border-top-style:dashed"></span>0 poised / high-impedance</div>
+    </div>
+    <div id="inspect"></div>
+  </aside>
+</main>
+<footer>
+  <span>© 1993–2026 Abhishek Choudhary. All rights reserved. · AyeAI · GPL-3.0-or-later</span>
+  <span>DOI: <a id="doi" href="https://zenodo.org/record/21297556">10.5281/zenodo.21297556</a></span>
+</footer>
+
+<script>
+"use strict";
+/* ---------- ternary primitives (match spice/ cells & the C++ core) ---------- */
+const sign=v=>(v>0)-(v<0);
+const boxplus=(a,b)=>sign(a+b);       // ⊞ dominance / cancellation
+const gate=(a,b)=>a*b;                 // ⊙ ; ×0 ⇒ 0 (high impedance)
+
+/* ---------- component schema ---------- */
+const NODE_W=150, HDR=26, PORT_Y0=20, PORT_GAP=26;
+const SCHEMA={
+  SRC:   {t:"Source",  ins:[],           outs:["out"]},
+  GND:   {t:"Ground",  ins:[],           outs:["out"]},
+  ADD:   {t:"⊞ Adder", ins:["a","b"],    outs:["out"]},
+  GATE:  {t:"⊙ Gate",  ins:["in","c"],   outs:["out"]},
+  ROUTER:{t:"TSV router",ins:["in","ctrl"],outs:["up","down"]},
+  LATCH: {t:"Event latch",ins:["in","we"],outs:["q"]},
+  MEM:   {t:"Memristor",ins:["row","we"],outs:["g"]},
+  PROBE: {t:"Probe",   ins:["in"],       outs:[]}
+};
+let comps=[], wires=[], idc=0, running=false, timer=null, arm=null;
+
+function add(type,x,y){
+  const s=SCHEMA[type];
+  const c={id:++idc,type,x:x??60+((idc*30)%360),y:y??70+((idc*40)%320),
+           value:(type==='SRC'?1:0), state:0, g:0, out:{}};
+  s.outs.forEach(o=>c.out[o]=0);
+  comps.push(c); render(); return c;
+}
+function removeComp(id){ comps=comps.filter(c=>c.id!==id); wires=wires.filter(w=>w.f.c!==id&&w.t.c!==id); render(); }
+function portCenter(c,port,isIn){
+  const arr=isIn?SCHEMA[c.type].ins:SCHEMA[c.type].outs, i=arr.indexOf(port);
+  return { x:c.x+(isIn?0:NODE_W), y:c.y+HDR+PORT_Y0+i*PORT_GAP };
+}
+function comp(id){ return comps.find(c=>c.id===id); }
+function inVal(c,port){ const w=wires.find(w=>w.t.c===c.id&&w.t.p===port); if(!w)return 0; const s=comp(w.f.c); return s?(s.out[w.f.p]||0):0; }
+
+/* ---------- evaluation ---------- */
+function computeOut(c){
+  switch(c.type){
+    case 'SRC': return {out:c.value};
+    case 'GND': return {out:0};
+    case 'ADD': return {out:boxplus(inVal(c,'a'),inVal(c,'b'))};
+    case 'GATE':return {out:gate(inVal(c,'in'),inVal(c,'c'))};
+    case 'ROUTER':{const i=inVal(c,'in'),k=inVal(c,'ctrl');return {up:k>0?i:0,down:k<0?i:0};}
+    case 'LATCH':return {q:c.state};
+    case 'MEM':  return {g:c.g};
+    default: return {};
+  }
+}
+function settle(){ for(let k=0;k<40;k++){ let ch=false;
+    for(const c of comps){ const o=computeOut(c); for(const p in o){ if(c.out[p]!==o[p]){c.out[p]=o[p];ch=true;} } }
+    if(!ch)break; } }
+function commit(){ // clocked elements sample settled inputs
+  for(const c of comps){
+    if(c.type==='LATCH'){ if(inVal(c,'we')!==0) c.state=boxplus(c.state,inVal(c,'in')); }
+    if(c.type==='MEM'){ const row=inVal(c,'row'); if(inVal(c,'we')!==0 && row!==0) c.g=sign(row); } // spawn 0→±1
+  }
+}
+function step(){ settle(); commit(); settle(); render(); }
+function resetState(){ comps.forEach(c=>{c.state=0;c.g=0;}); settle(); render(); }
+
+/* ---------- rendering ---------- */
+const stage=document.getElementById('stage'), svg=document.getElementById('wires');
+function vcls(v){return v>0?'p':v<0?'n':'z';}
+function vstr(v){return v>0?'+1':v<0?'−1':'0';}
+function wireColor(v){return v>0?'#c8a24a':v<0?'#c8465a':'#586089';}
+function render(){
+  settle();
+  // nodes
+  [...stage.querySelectorAll('.node')].forEach(n=>n.remove());
+  for(const c of comps){
+    const s=SCHEMA[c.type], n=document.createElement('div');
+    n.className='node '+(c.type==='SRC'?'src':'')+(c.type==='PROBE'?' probe':'');
+    n.style.left=c.x+'px'; n.style.top=c.y+'px'; n.dataset.id=c.id;
+    const rows=Math.max(s.ins.length,s.outs.length,1);
+    let body='';
+    if(c.type==='SRC') body='<div class="val '+vcls(c.value)+'">'+vstr(c.value)+'</div> <span style="color:#7f8fbf;font-size:.66rem">click to cycle</span>';
+    else if(c.type==='GND') body='<span style="color:#586089">0 · ground</span>';
+    else if(c.type==='PROBE'){const v=inVal(c,'in');body='<div class="big val '+vcls(v)+'">'+vstr(v)+'</div>';}
+    else if(c.type==='LATCH') body='<span style="color:#7f8fbf;font-size:.66rem">state</span> <span class="val '+vcls(c.state)+'">'+vstr(c.state)+'</span>';
+    else if(c.type==='MEM') body='<span style="color:#7f8fbf;font-size:.66rem">G</span> <span class="val '+vcls(c.g)+'">'+vstr(c.g)+'</span>'+(c.g===0?' <span style="color:#586089;font-size:.62rem">pristine</span>':' <span style="color:#c8a24a;font-size:.62rem">◆ spawned</span>');
+    else { const ov=s.outs.map(o=>'<span class="val '+vcls(c.out[o])+'">'+vstr(c.out[o])+'</span>').join(' '); body=ov; }
+    n.innerHTML='<div class="hdr"><span>'+s.t+' <span style="color:#586089">#'+c.id+'</span></span><span class="x" data-x="'+c.id+'">✕</span></div>'+
+                '<div class="body" style="min-height:'+(rows*PORT_GAP+8)+'px">'+body+'</div>';
+    s.ins.forEach((p,i)=>{ const el=document.createElement('div'); el.className='port inp'; el.style.left='-7px';
+      el.style.top=(HDR+PORT_Y0-6+i*PORT_GAP)+'px'; el.dataset.c=c.id; el.dataset.p=p; el.dataset.in='1';
+      el.innerHTML='<span class="lbl">'+p+'</span>'; n.appendChild(el); });
+    s.outs.forEach((p,i)=>{ const el=document.createElement('div'); el.className='port out'; el.style.right='-7px';
+      el.style.top=(HDR+PORT_Y0-6+i*PORT_GAP)+'px'; el.dataset.c=c.id; el.dataset.p=p;
+      if(arm&&arm.c===c.id&&arm.p===p) el.classList.add('armed');
+      el.innerHTML='<span class="lbl">'+p+'</span>'; n.appendChild(el); });
+    stage.appendChild(n);
+  }
+  // wires
+  let paths='';
+  for(let i=0;i<wires.length;i++){ const w=wires[i], a=comp(w.f.c), b=comp(w.t.c); if(!a||!b)continue;
+    const p1=portCenter(a,w.f.p,false), p2=portCenter(b,w.t.p,true), v=a.out[w.f.p]||0;
+    const dash=v===0?'stroke-dasharray="6 5"':'';
+    paths+='<path d="M'+p1.x+' '+p1.y+' C'+(p1.x+50)+' '+p1.y+' '+(p2.x-50)+' '+p2.y+' '+p2.x+' '+p2.y+
+           '" fill="none" stroke="'+wireColor(v)+'" stroke-width="3" '+dash+' data-w="'+i+'"></path>';
+    paths+='<circle cx="'+p2.x+'" cy="'+p2.y+'" r="3" fill="'+wireColor(v)+'"></circle>';
+  }
+  svg.innerHTML=paths;
+  inspect();
+}
+function inspect(){
+  const el=document.getElementById('inspect');
+  let h='<h3>Live state</h3><table>';
+  for(const c of comps){ let val;
+    if(c.type==='SRC')val=vstr(c.value); else if(c.type==='PROBE')val=vstr(inVal(c,'in'));
+    else if(c.type==='LATCH')val='q='+vstr(c.state); else if(c.type==='MEM')val='G='+vstr(c.g)+(c.g?' ◆':'');
+    else val=SCHEMA[c.type].outs.map(o=>o+'='+vstr(c.out[o])).join(' ');
+    h+='<tr><td>'+SCHEMA[c.type].t+' #'+c.id+'</td><td style="text-align:right">'+val+'</td></tr>'; }
+  h+='</table><div style="color:#7f8fbf;margin-top:.5rem;font-size:.68rem">'+comps.length+' cells · '+wires.length+' wires</div>';
+  el.innerHTML=h;
+}
+
+/* ---------- interaction ---------- */
+document.querySelectorAll('.palette [data-add]').forEach(b=>b.onclick=()=>add(b.dataset.add));
+document.getElementById('b-step').onclick=step;
+document.getElementById('b-reset').onclick=resetState;
+document.getElementById('b-clear').onclick=()=>{comps=[];wires=[];idc=0;arm=null;render();};
+document.getElementById('b-run').onclick=function(){ running=!running; this.textContent=running?'⏸ Pause':'⟳ Run';
+  if(running) timer=setInterval(step,900); else clearInterval(timer); };
+
+// port wiring + source cycle + delete + wire delete (event delegation)
+stage.addEventListener('click',e=>{
+  const port=e.target.closest('.port');
+  if(port){ const c=+port.dataset.c, p=port.dataset.p, isIn=port.dataset.in==='1';
+    if(!isIn){ arm={c,p}; render(); }                      // arm an output
+    else if(arm){ wires=wires.filter(w=>!(w.t.c===c&&w.t.p===p));  // one wire per input
+      wires.push({f:arm,t:{c,p}}); arm=null; render(); }
+    return; }
+  const wp=e.target.closest('[data-w]'); if(wp){ wires.splice(+wp.dataset.w,1); render(); return; }
+  const x=e.target.closest('[data-x]'); if(x){ removeComp(+x.dataset.x); return; }
+  const node=e.target.closest('.node'); if(node && !e.target.closest('.hdr')){
+    const c=comp(+node.dataset.id); if(c&&c.type==='SRC'){ c.value=c.value>=1?-1:c.value+1; render(); } return; }
+  arm=null; render();
+});
+// drag nodes by header
+let drag=null;
+stage.addEventListener('mousedown',e=>{ const h=e.target.closest('.hdr'); if(!h||e.target.dataset.x)return;
+  const node=h.closest('.node'), c=comp(+node.dataset.id); const r=stage.getBoundingClientRect();
+  drag={c,dx:e.clientX-r.left-c.x,dy:e.clientY-r.top-c.y}; e.preventDefault(); });
+window.addEventListener('mousemove',e=>{ if(!drag)return; const r=stage.getBoundingClientRect();
+  drag.c.x=Math.max(0,e.clientX-r.left-drag.dx); drag.c.y=Math.max(0,e.clientY-r.top-drag.dy); render(); });
+window.addEventListener('mouseup',()=>drag=null);
+
+/* ---------- presets ---------- */
+const P={
+  gate(){ const i=add('SRC',60,80); i.value=1; const c=add('SRC',60,200); c.value=0;
+    const g=add('GATE',300,120); const o=add('PROBE',520,140);
+    wires.push({f:{c:i.id,p:'out'},t:{c:g.id,p:'in'}},{f:{c:c.id,p:'out'},t:{c:g.id,p:'c'}},{f:{c:g.id,p:'out'},t:{c:o.id,p:'in'}});
+    hintMsg('Cycle the c source: c=0 ⇒ output goes high-impedance (dashed). c=+1 passes, c=−1 inverts.'); },
+  acc(){ const i=add('SRC',60,80); i.value=1; const we=add('SRC',60,210); we.value=1;
+    const l=add('LATCH',300,120); const o=add('PROBE',520,140);
+    wires.push({f:{c:i.id,p:'out'},t:{c:l.id,p:'in'}},{f:{c:we.id,p:'out'},t:{c:l.id,p:'we'}},{f:{c:l.id,p:'q'},t:{c:o.id,p:'in'}});
+    hintMsg('Press Step: with we≠0 the latch accumulates in ⊞. Set in=+1 then in=−1 to watch dominance/cancellation.'); },
+  spawn(){ const r=add('SRC',60,80); r.value=1; const we=add('SRC',60,210); we.value=1;
+    const m=add('MEM',300,120); const o=add('PROBE',520,140);
+    wires.push({f:{c:r.id,p:'out'},t:{c:m.id,p:'row'}},{f:{c:we.id,p:'out'},t:{c:m.id,p:'we'}},{f:{c:m.id,p:'g'},t:{c:o.id,p:'in'}});
+    hintMsg('Press Step: a pristine 0-node (G=0, high-Z) is programmed to ±1 — the spawning operator * births a physical dimension. Reset state to un-spawn.'); },
+  tsv(){ const i=add('SRC',60,80); i.value=1; const c=add('SRC',60,210); c.value=1;
+    const rt=add('ROUTER',300,110); const u=add('PROBE',520,90); const d=add('PROBE',520,210);
+    wires.push({f:{c:i.id,p:'out'},t:{c:rt.id,p:'in'}},{f:{c:c.id,p:'out'},t:{c:rt.id,p:'ctrl'}},
+      {f:{c:rt.id,p:'up'},t:{c:u.id,p:'in'}},{f:{c:rt.id,p:'down'},t:{c:d.id,p:'in'}});
+    hintMsg('ctrl=+1 routes up (Z+1), ctrl=−1 routes down (Z−1), ctrl=0 isolates both — the collision escape into the vertical dimension.'); }
+};
+function hintMsg(m){ document.getElementById('hint').innerHTML=m; }
+document.getElementById('preset').onchange=function(){ if(!this.value)return;
+  comps=[];wires=[];idc=0;arm=null; P[this.value](); render(); this.value=''; };
+
+/* boot with the gate preset */
+P.gate(); render();
+</script>
+</body>
+</html>

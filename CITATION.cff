@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use Zamin, please cite it as below."
+title: "Zamin — PRATIK Ternary Silicon: physicalizing the poised-zero substrate"
+abstract: >-
+  Hardware-realization blueprint for the PRATIK balanced-ternary substrate of the PEDLER
+  Event Algebra: MTCMOS three-rail ternary logic with a physical high-impedance poised-zero,
+  a complementary dual-memristor 3D crossbar with autogenous dimension spawning, spatial
+  linguistic compilation, TSV routing, and microfluidic cooling. Includes a SPICE cell
+  library, a gdsfactory layout generator, an IEEE manuscript, and a WYSIWYG circuit simulator.
+type: software
+version: "1.0.0"
+license: GPL-3.0-or-later
+repository-code: "https://github.com/zistgah/zamin"
+url: "https://zistgah.org/zamin/"
+doi: "10.5281/zenodo.21297556"
+authors:
+  - family-names: Choudhary
+    given-names: Abhishek
+    affiliation: AyeAI
+keywords: [PEDLER, PRATIK, balanced ternary, memristor, MTCMOS, 3D IC, microfluidics, neuromorphic, AyeAI Triad]

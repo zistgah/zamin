@@ -1,0 +1,20 @@
+{
+  "title": "Zamin — PRATIK Ternary Silicon: physicalizing the poised-zero substrate",
+  "version": "1.0.0",
+  "upload_type": "publication",
+  "publication_type": "workingpaper",
+  "description": "<p>Hardware-realization blueprint for the PRATIK balanced-ternary substrate of the PEDLER developmental Event Algebra. Specifies a three-rail MTCMOS ternary cell library in which the poised zero-state is a physical high-impedance ground (not a resistive mid-rail divider); a complementary dual-memristor 3D crossbar on which the autogenous spawning operator programs a pristine max-HRS node from 0 to +-1, creating a new physical dimension; a prime-field spatial hash that compiles case-invariant multi-script tokens (Project ILM) into crossbar coordinates; ternary through-silicon-via vertical routing for collision escape; and finite-element thermal modelling with an interleaved microfluidic interposer. Ships a SPICE cell library and sign-frustration testbench, a gdsfactory microfluidic-interposer layout generator, an IEEE-style manuscript, and a dependency-free WYSIWYG ternary-circuit simulator. This is a design blueprint (netlists and constraints to simulate before tape-out); the device models are illustrative placeholders and no measured silicon is claimed. External citations (Chua 1971; Strukov et al. 2008; Tuckerman and Pease 1981) were verified. Author affiliation: AyeAI. Copyright (C) 1993-2026 Abhishek Choudhary. All rights reserved. Licensed GPL-3.0-or-later.</p>",
+  "creators": [{ "name": "Choudhary, Abhishek", "affiliation": "AyeAI" }],
+  "license": "GPL-3.0-or-later",
+  "access_right": "open",
+  "language": "eng",
+  "keywords": ["PEDLER","PRATIK","AyeAI Triad","balanced ternary","memristor","MTCMOS","3D IC","through-silicon via","microfluidic cooling","neuromorphic","Project ILM","linguistic equity"],
+  "related_identifiers": [
+    { "relation": "isSupplementTo", "identifier": "https://zistgah.org/chapter/", "resource_type": "publication-section" },
+    { "relation": "isPartOf",       "identifier": "https://zistgah.org/", "resource_type": "other" },
+    { "relation": "references",     "identifier": "10.1109/TCT.1971.1083337", "resource_type": "publication" },
+    { "relation": "references",     "identifier": "10.1038/nature06932", "resource_type": "publication" },
+    { "relation": "references",     "identifier": "10.1109/EDL.1981.25367", "resource_type": "publication" },
+    { "relation": "references",     "identifier": "10.5281/zenodo.17497559", "resource_type": "publication" }
+  ]
+}

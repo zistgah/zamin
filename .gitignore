@@ -1,0 +1,22 @@
+# build / sim artifacts
+*.gds
+*.raw
+*.out
+*.log
+# LaTeX aux
+*.aux
+*.bbl
+*.blg
+*.synctex.gz
+manuscript/*.pdf
+# DOI / provenance working files
+/.work*/
+/.doi-package/
+result*.json
+*.zip
+*.ots
+SHA256SUMS.txt
+# OS / editor
+.DS_Store
+*.swp
+__pycache__/

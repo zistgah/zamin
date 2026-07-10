@@ -1,0 +1,23 @@
+Zamin — PRATIK Ternary Silicon
+© 1993–2026 Abhishek Choudhary. All rights reserved.
+Affiliation: AyeAI.
+
+This project is free software licensed under the GNU General Public License,
+version 3 or (at your option) any later version (SPDX: GPL-3.0-or-later); see
+the LICENSE file. Copyright and license notices in each source file must be
+preserved.
+
+The author additionally asserts the copyright notice above ("All rights
+reserved"). Where that assertion and the GPL grant appear to conflict, the
+author's assertion is retained by explicit instruction and takes precedence in
+interpretation; the GPL grant continues to govern the rights conveyed to
+recipients of the software.
+
+CONTENTS. This repository contains: a hardware-realization paper (paper/), a
+WYSIWYG ternary-circuit simulator (index.html), a SPICE cell library and
+testbench (spice/), a gdsfactory layout generator (layout/), and an IEEE-style
+manuscript (manuscript/). The device models in spice/models are illustrative
+placeholders, not silicon-calibrated; no measured silicon is claimed.
+
+PEDLER, PRATIK, Zamin, the AyeAI Triad, Hindawi Programming System, Project ILM
+and Romenagri are works and marks of Abhishek Choudhary / AyeAI.
