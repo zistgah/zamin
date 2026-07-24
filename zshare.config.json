@@ -1,0 +1,14 @@
+{
+  "_copyright": "© 1993–2026 Abhishek Choudhary. All rights reserved.",
+  "title": "Zamin Bench — ternary circuit simulator",
+  "short": "Zamin",
+  "text": "Zamin Bench — Ternary Circuit Simulator",
+  "bg": "#0a1430",
+  "fg": "#c8a24a",
+  "hashKey": "s",
+  "sw": "sw.js",
+  "whatsapp": true,
+  "card": true,
+  "stamp": true,
+  "installHint": true
+}
